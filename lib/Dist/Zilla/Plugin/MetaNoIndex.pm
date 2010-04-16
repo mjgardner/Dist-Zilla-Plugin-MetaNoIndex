@@ -1,68 +1,91 @@
 package Dist::Zilla::Plugin::MetaNoIndex;
 
+# ABSTRACT: Stop CPAN from indexing stuff
+
+use English qw(-no_match_vars);
 use Moose;
+use Readonly;
 use Moose::Autobox;
 with 'Dist::Zilla::Role::MetaProvider';
 
+Readonly my %ATTR_ALIAS => (
+    directory => [qw(dir directories folder)],
+    file      => ['files'],
+    package   => [qw(class module packages)],
+    namespace => ['namespaces'],
+);
+
+=encoding utf8
+
+=begin Pod::Coverage
+
+    mvp_aliases
+    mvp_multivalue_args
+
+=end Pod::Coverage
+
+=cut
+
 sub mvp_aliases {
-    return {
-        dir         => 'directories',
-        directory   => 'directories',
-        folder      => 'directories',
-        file        => 'files',
-        'package'   => 'packages',
-        module      => 'packages',
-        class       => 'packages',
-        namespace   => 'namespaces',
-    };
+    my %aliases;
+    while ( my ( $attr, $aliases_ref ) = each %ATTR_ALIAS ) {
+        %aliases = ( %aliases, map { $ARG => $attr } @{$aliases_ref} );
+    }
+    return \%aliases;
 }
 
-sub mvp_multivalue_args { qw(directories files namespaces packages) }
+sub mvp_multivalue_args { return keys %ATTR_ALIAS }
 
-has directories => (
-    is          => 'rw',
-    isa         => 'ArrayRef',
-    predicate   => 'has_directories',
-);
+=attr directory
 
-has files => (
-    is          => 'ro',
-    isa         => 'ArrayRef',
-    predicate   => 'has_files',
-);
+Exclude folders and everything in them. Example: C<author.t>.
+Aliases: C<folder>, C<dir>, C<directories>.
 
-has packages => (
-    is          => 'ro',
-    isa         => 'ArrayRef',
-    predicate   => 'has_packages',
-);
+=attr file
 
-has namespaces => (
-    is          => 'ro',
-    isa         => 'ArrayRef',
-    predicate   => 'has_namespaces',
-);
+Exclude a specific file. Example: C<lib/Foo.pm>.
+Alias: C<files>.
+
+=attr package
+
+Exclude by package name. Example: C<My::Package>.
+Aliases: C<class>, C<module>, C<packages>.
+
+=attr namespace
+
+Exclude everything under a specific namespace. Example: C<My::Package>. 
+Alias: C<namespaces>.
+
+B<NOTE:> This will not exclude the package C<My::Package>, only everything
+under it like C<My::Package::Foo>.
+
+=cut
+
+for ( keys %ATTR_ALIAS ) {
+    has $ARG => (
+        is        => 'ro',
+        isa       => 'ArrayRef[Str]',
+        init_arg  => $ARG,
+        predicate => "_has_$ARG",
+    );
+}
+
+=method metadata
+
+Returns a reference to a hash containing the distribution's no_index metadata.
+
+=cut
 
 sub metadata {
     my $self = shift;
-    my %no = ();
-    if ($self->has_directories) {
-        $no{directory} = $self->directories;
-    }
-    if ($self->has_files) {
-        $no{file} = $self->files;
-    }
-    if ($self->has_packages) {
-        $no{package} = $self->packages;
-    }
-    if ($self->has_namespaces) {
-        $no{namespace} = $self->namespaces;
-    }
-    use Data::Dumper;
-    warn Dumper \%no;
-    return { no_index => \%no };
+    return {
+        no_index => {
+            map { $ARG => $self->$ARG }
+                grep { my $method = "_has_$ARG"; $self->$method }
+                keys %ATTR_ALIAS
+        }
+    };
 }
-
 
 =head1 NAME
 
@@ -72,40 +95,20 @@ Dist::Zilla::Plugin::MetaNoIndex - Stop CPAN from indexing stuff
 
 In your F<dist.ini>:
 
- [MetaNoIndex]
- directory = author.t
- directory = examples
- file = lib/Foo.pm
- package = My::Module
- namespace = My::Module
+  [MetaNoIndex]
+  directory = author.t
+  directory = examples
+  file = lib/Foo.pm
+  package = My::Module
+  namespace = My::Module
 
 =head1 DESCRIPTION
 
-This plugin allows you to prevent PAUSE/CPAN from indexing files you don't want indexed. This is useful if you build test classes or example classes that are used for those purposes only, and are not part of the distribution. It does this by adding a C<no_index> block to your F<META.yml> file in your distribution.
-
-The following directives are available.
-
-=over
-
-=item directory
-
-Exclude folders and everything in them. Example: C<author.t>. Aliases: C<folder>, C<dir>.
-
-=item file
-
-Exclude a specific file. Example: C<lib/Foo.pm>.
-
-=item package
-
-Exclude by package name. Example: C<My::Package>. Aliases: C<class>, C<module>.
-
-=item namespace
-
-Exclude everything under a specific namespace. Example: C<My::Package>. 
-
-B<NOTE:> This will not exclude the package C<My::Package>, only everything under it like C<My::Package::Foo>.
-
-=back
+This plugin allows you to prevent PAUSE/CPAN from indexing files you don't
+want indexed. This is useful if you build test classes or example classes
+that are used for those purposes only, and are not part of the distribution.
+It does this by adding a C<no_index> block to your F<META.yml> file in your
+distribution.
 
 =head1 SUPPORT
 
@@ -131,17 +134,12 @@ JT Smith <jt_at_plainblack_com>
 
 =head1 LEGAL
 
-Dist::Zilla::Plugin::MetaNoIndex is Copyright 2010 Plain Black Corporation (L<http://www.plainblack.com/>) and is licensed under the same terms as Perl itself.
+Dist::Zilla::Plugin::MetaNoIndex is Copyright 2010 Plain Black Corporation
+(L<http://www.plainblack.com/>) and is licensed under the same terms as Perl
+itself.
 
 =cut
-
-
-
-
-
-
 
 __PACKAGE__->meta->make_immutable;
 no Moose;
 1;
-
