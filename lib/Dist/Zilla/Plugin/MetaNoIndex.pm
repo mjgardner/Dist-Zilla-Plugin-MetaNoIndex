@@ -17,6 +17,8 @@ Readonly my %ATTR_ALIAS => (
 
 =encoding utf8
 
+=for stopword JT
+
 =begin Pod::Coverage
 
     mvp_aliases
@@ -87,9 +89,11 @@ sub metadata {
     };
 }
 
-=head1 NAME
+__PACKAGE__->meta->make_immutable;
+no Moose;
+1;
 
-Dist::Zilla::Plugin::MetaNoIndex - Stop CPAN from indexing stuff
+__END__
 
 =head1 SYNOPSIS
 
@@ -127,19 +131,3 @@ L<http://rt.cpan.org/Public/Dist/Display.html?Name=Dist-Zilla-Plugin-MetaNoIndex
 =head1 SEE ALSO
 
 L<Dist::Zilla>
-
-=head1 AUTHOR
-
-JT Smith <jt_at_plainblack_com>
-
-=head1 LEGAL
-
-Dist::Zilla::Plugin::MetaNoIndex is Copyright 2010 Plain Black Corporation
-(L<http://www.plainblack.com/>) and is licensed under the same terms as Perl
-itself.
-
-=cut
-
-__PACKAGE__->meta->make_immutable;
-no Moose;
-1;
