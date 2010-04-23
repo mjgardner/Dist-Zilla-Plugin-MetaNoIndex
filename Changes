@@ -1,7 +1,8 @@
 Revision history for Dist-Zilla-Plugin-MetaNoIndex
 
 {{$NEXT}}
-    Refactored with independently-developed unreleased version by mjgardner.
+    Refactored with mjgardner's independently-developed unreleased version.
+    mjgardner taking over maintenance.
     Added tests.
 
 0.0300 2010-03-03
