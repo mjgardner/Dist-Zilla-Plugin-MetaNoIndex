@@ -97,7 +97,7 @@ __END__
 In your F<dist.ini>:
 
   [MetaNoIndex]
-  directory = author.t
+  directory = t/author
   directory = examples
   file = lib/Foo.pm
   package = My::Module
@@ -111,20 +111,12 @@ that are used for those purposes only, and are not part of the distribution.
 It does this by adding a C<no_index> block to your F<META.yml> file in your
 distribution.
 
-=head1 SUPPORT
+=head1 SEE ALSO
 
 =over
 
-=item Repository
+=item L<Dist::Zilla>
 
-L<http://github.com/rizen/Dist-Zilla-Plugin-MetaNoIndex>
-
-=item Bug Reports
-
-L<http://rt.cpan.org/Public/Dist/Display.html?Name=Dist-Zilla-Plugin-MetaNoIndex>
+=item L<META-spec|http://module-build.sourceforge.net/META-spec-current.html>
 
 =back
-
-=head1 SEE ALSO
-
-L<Dist::Zilla>
