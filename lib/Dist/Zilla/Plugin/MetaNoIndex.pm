@@ -2,10 +2,9 @@ package Dist::Zilla::Plugin::MetaNoIndex;
 
 # ABSTRACT: Stop CPAN from indexing stuff
 
-use English qw(-no_match_vars);
+use English '-no_match_vars';
 use Moose;
 use Readonly;
-use Moose::Autobox;
 with 'Dist::Zilla::Role::MetaProvider';
 
 Readonly my %ATTR_ALIAS => (
@@ -16,8 +15,6 @@ Readonly my %ATTR_ALIAS => (
 );
 
 =encoding utf8
-
-=for stopword JT
 
 =begin Pod::Coverage
 

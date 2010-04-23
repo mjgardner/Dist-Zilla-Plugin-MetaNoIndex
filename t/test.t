@@ -3,7 +3,7 @@
 use Cwd;
 use Dist::Zilla::Tester;
 use Data::PowerSet 'powerset';
-use English qw(-no_match_vars);
+use English '-no_match_vars';
 use File::Temp;
 use Modern::Perl;
 use Path::Class qw(dir file);
