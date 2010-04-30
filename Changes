@@ -1,6 +1,7 @@
 Revision history for Dist-Zilla-Plugin-MetaNoIndex
 
 {{$NEXT}}
+    Release with newer Dist::Zilla to get better BUILD_REQUIRES treatment in Makefile.PL
 
 1.101130  2010-04-23 18:17:07 America/New_York
     Refactored with mjgardner's independently-developed unreleased version.
