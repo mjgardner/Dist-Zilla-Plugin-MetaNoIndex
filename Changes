@@ -1,6 +1,8 @@
 Revision history for Dist-Zilla-Plugin-MetaNoIndex
 
 {{$NEXT}}
+
+1.101550  2010-06-04 16:37:22 America/New_York
     Updates for Dist::Zilla 4
 
 1.101200  2010-04-30 13:57:12 America/New_York
