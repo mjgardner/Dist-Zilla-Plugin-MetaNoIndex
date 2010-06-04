@@ -5,7 +5,7 @@ package Dist::Zilla::Plugin::MetaNoIndex;
 use English '-no_match_vars';
 use Moose;
 use Readonly;
-with 'Dist::Zilla::Role::MetaProvider';
+with 'Dist::Zilla::Role::MetaProvider' => { -version => 4.101550 };
 
 Readonly my %ATTR_ALIAS => (
     directory => [qw(dir directories folder)],

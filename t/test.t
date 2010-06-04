@@ -1,7 +1,7 @@
 #!perl
 
 use Cwd;
-use Dist::Zilla::Tester;
+use Dist::Zilla::Tester 4.101550;
 use Data::PowerSet 'powerset';
 use English '-no_match_vars';
 use File::Temp;
